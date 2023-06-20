@@ -1,8 +1,7 @@
 const myForm = document.querySelector('#my-form');
-
 const nameInput = document.querySelector('#name');
-
 const emailInput = document.querySelector('#email');
+const phoneInput = document.querySelector('#phone');
 const itemList = document.getElementById('items');
 
 myForm.addEventListener('submit', onSubmit);
@@ -10,14 +9,13 @@ itemList.addEventListener('click', removeItem);
   
 function onSubmit(e){
     e.preventDefault();
-    let myObj={
+    axios.post('https://crudcrud.com/api/f9116f855ba4473983b31abc3faf5be4/bookings',{
       name:nameInput.value,
-      email:emailInput.value
-    };
-    myObj=JSON.stringify(myObj);
-    e.preventDefault(); 
-    localStorage.setItem(emailInput.value,myObj);
-  
+      email:emailInput.value,
+      phone:phoneInput.value
+    })
+      .then(re=> console.log(re.data))
+      .catch(e=> console.log(e))
     // Create new li element
     var li = document.createElement('li');
     // Add class
@@ -26,6 +24,8 @@ function onSubmit(e){
     li.appendChild(document.createTextNode(nameInput.value));
     li.appendChild(document.createTextNode(" "));
     li.appendChild(document.createTextNode(emailInput.value));
+    li.appendChild(document.createTextNode(" "));
+    li.appendChild(document.createTextNode(phoneInput.value));
     li.appendChild(document.createTextNode(" "));
     // Create del button element
     var deleteBtn = document.createElement('button');
@@ -46,14 +46,13 @@ function onSubmit(e){
   function removeItem(e){
     if(e.target.classList.contains('delete')){
       var li = e.target.parentElement;
-      localStorage.removeItem(li.firstChild.nextSibling.nextSibling.nodeValue);
       itemList.removeChild(li); 
     }
     if(e.target.classList.contains('edit')){
       var li = e.target.parentElement;
+      phoneInput.value = li.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.nodeValue;
       emailInput.value=li.firstChild.nextSibling.nextSibling.nodeValue;
       nameInput.value=li.firstChild.nodeValue;
-      localStorage.removeItem(li.firstChild.nextSibling.nextSibling.nodeValue);
       itemList.removeChild(li);
   }
 }
