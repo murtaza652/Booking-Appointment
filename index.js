@@ -23,6 +23,8 @@ function onSubmit(e){
 function removeItem(e){
   if(e.target.classList.contains('delete')){
       var li = e.target.parentElement;
+      let link="https://crudcrud.com/api/f9116f855ba4473983b31abc3faf5be4/bookings/"+ e.target.id;
+      axios.delete(link);
       itemList.removeChild(li); 
   }
   if(e.target.classList.contains('edit')){
@@ -30,6 +32,8 @@ function removeItem(e){
       phoneInput.value = li.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.nodeValue;
       emailInput.value=li.firstChild.nextSibling.nextSibling.nodeValue;
       nameInput.value=li.firstChild.nodeValue;
+      let link="https://crudcrud.com/api/f9116f855ba4473983b31abc3faf5be4/bookings/"+ e.target.id;
+      axios.delete(link);
       itemList.removeChild(li);
   }
 }
@@ -59,7 +63,9 @@ function showOnscreen(user)
   var editBtn= document.createElement('button');
   // Add classes to del button
   deleteBtn.className = 'btn-sm float-right delete';
+  deleteBtn.id=user._id;
   editBtn.className="btn-sm float-right edit"
+  editBtn.id=user._id;
   // Append text node
   deleteBtn.appendChild(document.createTextNode('delete'));
   editBtn.appendChild(document.createTextNode('edit'));  
