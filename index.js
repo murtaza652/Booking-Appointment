@@ -6,42 +6,52 @@ const itemList = document.getElementById('items');
 
 myForm.addEventListener('submit', onSubmit);
 itemList.addEventListener('click', removeItem);
-  
+
 function onSubmit(e){
     e.preventDefault();
-    axios.post('https://crudcrud.com/api/f9116f855ba4473983b31abc3faf5be4/bookings',{
-      name:nameInput.value,
-      email:emailInput.value,
-      phone:phoneInput.value
-    })
-      .then(re=> console.log(re.data))
+    const name=nameInput.value;
+    const email=emailInput.value;
+    const phone=phoneInput.value;
+    var obj={
+      name,
+      email,
+      phone
+    }
+    axios.post('http://localhost:3000/add-user',obj)
+      .then(res=> {
+        showOnscreen(res.data.newUserDetail)
+      })
       .catch(e=> console.log(e))
-    showOnscreen({name:nameInput.value,
-      email:emailInput.value,
-      phone:phoneInput.value})
   }  
 function removeItem(e){
   if(e.target.classList.contains('delete')){
       var li = e.target.parentElement;
-      let link="https://crudcrud.com/api/f9116f855ba4473983b31abc3faf5be4/bookings/"+ e.target.id;
-      axios.delete(link);
-      itemList.removeChild(li); 
+      axios.post('http://localhost:3000/delete',{id:e.target.id})
+      .then(res=> {
+        console.log(res);
+      })
+      .catch(e=> console.log(e))
+      itemList.removeChild(li);
   }
   if(e.target.classList.contains('edit')){
       var li = e.target.parentElement;
       phoneInput.value = li.firstChild.nextSibling.nextSibling.nextSibling.nextSibling.nodeValue;
       emailInput.value=li.firstChild.nextSibling.nextSibling.nodeValue;
       nameInput.value=li.firstChild.nodeValue;
-      let link="https://crudcrud.com/api/f9116f855ba4473983b31abc3faf5be4/bookings/"+ e.target.id;
-      axios.delete(link);
+      axios.post('http://localhost:3000/delete',{id:e.target.id})
+      .then(res=> {
+        console.log(res);
+      })
+      .catch(e=> console.log(e))
       itemList.removeChild(li);
   }
 }
 window.addEventListener('DOMContentLoaded',()=>{
-  axios.get('https://crudcrud.com/api/f9116f855ba4473983b31abc3faf5be4/bookings')
+  axios.get('http://localhost:3000/add-user')
     .then( res=> {
-      for(var i=0; i<res.data.length; i++) { 
-        showOnscreen(res.data[i]);
+      console.log(res.data.user);
+      for(var i=0; i<res.data.user.length; i++) { 
+        showOnscreen(res.data.user[i]);
     }})
 
 })
@@ -63,9 +73,9 @@ function showOnscreen(user)
   var editBtn= document.createElement('button');
   // Add classes to del button
   deleteBtn.className = 'btn-sm float-right delete';
-  deleteBtn.id=user._id;
+  deleteBtn.id=user.id;
   editBtn.className="btn-sm float-right edit"
-  editBtn.id=user._id;
+  editBtn.id=user.id;
   // Append text node
   deleteBtn.appendChild(document.createTextNode('delete'));
   editBtn.appendChild(document.createTextNode('edit'));  
